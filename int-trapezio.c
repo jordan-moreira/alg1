@@ -100,6 +100,25 @@ Entrada capturarDados()
 }
 
 // Requisito 6: Saída de Dados
+// Função para calcular o erro absoluto
+double ErroAbsoluto(double valorReal, double valorAprox){
+    return fabs(valorReal - valorAprox);
+}
+//Função pra calcular o erro relativo
+double ErroRelativo(double valorReal, double valorAprox){
+    return ErroAbsoluto(valorReal, valorAprox) / fabs(valorReal);
+}
+//Função saída
+void Saida(double valorReal, double valorAprox, int nTrapezios){
+    double erroAbsoluto = ErroAbsoluto(valorReal, valorAprox);
+    double erroRelativo = ErroRelativo(valorReal, valorAprox);
+
+//Imprimir os resultados
+printf("Resultado para %d trapézios: %.2f\n", nTrapezios, valorReal);
+printf("Erro Absoluto: %.2f\n", erroAbsoluto);
+printf("Erro Relativo (%%): %.2f\n", erroRelativo);
+}
+
 
 // Requisito 7: Função Principal
 int main()
