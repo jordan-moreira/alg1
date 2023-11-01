@@ -1,3 +1,5 @@
+// feito por victor, thiago, jordan
+
 #include <stdio.h>
 #include <math.h>
 
@@ -10,8 +12,9 @@ typedef struct
 
 typedef struct
 {
-    float opcao,
+    int opcao,
         nTrapezios;
+    double valorReal;
 
 } Entrada;
 
@@ -35,6 +38,7 @@ float chamada(int funcaoSelecionada, float x)
 
     default:
         printf("erro ao executar a funcao");
+        return 0;
         break;
     }
 }
@@ -70,6 +74,8 @@ float calcularIntegral(int funcaoSelecionada, float matrizDeCordenadas[][2], int
     float h = (intervalo.b - intervalo.a) / m,
           somatoriaArea = 0;
 
+    dividirIntervalo(funcaoSelecionada, matrizDeCordenadas, intervalo, m);
+
     for (int i = 0; i < m; i++)
     {
         somatoriaArea += calcularAreaTrapezio(matrizDeCordenadas[i][1], matrizDeCordenadas[i][0], h);
@@ -93,6 +99,11 @@ Entrada capturarDados()
         printf("3) Integral [1.0, 3.0] de f(x) = x^3 ln(x)\n");
         printf("Escolha a funcao a integrar:\n");
         scanf("%d%*c", &entrada.opcao);
+
+        if (!(entrada.opcao == 1 || entrada.opcao == 2 || entrada.opcao == 3))
+        {
+            printf("Opcao invalida!!");
+        }
     }
     printf("Digite o numero de trapezios a usar na aproximacao:(entre 1 e 1000)\n");
     scanf("%d%*c", &entrada.nTrapezios);
@@ -101,29 +112,59 @@ Entrada capturarDados()
 
 // Requisito 6: Saída de Dados
 // Função para calcular o erro absoluto
-double ErroAbsoluto(double valorReal, double valorAprox){
+float ErroAbsoluto(float valorReal, float valorAprox)
+{
     return fabs(valorReal - valorAprox);
 }
-//Função pra calcular o erro relativo
-double ErroRelativo(double valorReal, double valorAprox){
+// Função pra calcular o erro relativo
+float ErroRelativo(float valorReal, float valorAprox)
+{
     return ErroAbsoluto(valorReal, valorAprox) / fabs(valorReal);
 }
-//Função saída
-void Saida(double valorReal, double valorAprox, int nTrapezios){
-    double erroAbsoluto = ErroAbsoluto(valorReal, valorAprox);
-    double erroRelativo = ErroRelativo(valorReal, valorAprox);
+// Função saída
+void Saida(float valorReal, float valorAprox, int nTrapezios)
+{
+    float erroAbsoluto = ErroAbsoluto(valorReal, valorAprox);
+    float erroRelativo = ErroRelativo(valorReal, valorAprox);
 
-//Imprimir os resultados
-printf("Resultado para %d trapézios: %.2f\n", nTrapezios, valorReal);
-printf("Erro Absoluto: %.2f\n", erroAbsoluto);
-printf("Erro Relativo (%%): %.2f\n", erroRelativo);
+    // Imprimir os resultados
+    printf("Resultado para %d trapézios: %f\n", nTrapezios, valorAprox);
+    printf("Erro Absoluto: %f\n", erroAbsoluto);
+    printf("Erro Relativo (%%): %f\n", erroRelativo);
 }
-
 
 // Requisito 7: Função Principal
 int main()
 {
-    printf("bora la");
+    Entrada dadosEntrada = capturarDados();
+    Intervalo intervalo;
+    float matrizDeCordenadas[dadosEntrada.nTrapezios][2];
+
+    switch (dadosEntrada.opcao)
+    {
+    case 1:
+        intervalo.a = 1;
+        intervalo.b = 7;
+        dadosEntrada.valorReal = 1.94591;
+        break;
+    case 2:
+        intervalo.a = 0.4;
+        intervalo.b = 2;
+        dadosEntrada.valorReal = 12.48287;
+        break;
+    case 3:
+        intervalo.a = 1;
+        intervalo.b = 3;
+        dadosEntrada.valorReal = 17.2469;
+        break;
+    default:
+        printf("erro na selecao de intervalo!!");
+        break;
+    }
+
+    float resultado = calcularIntegral(dadosEntrada.opcao, matrizDeCordenadas, dadosEntrada.nTrapezios, intervalo);
+
+    Saida(dadosEntrada.valorReal, resultado, dadosEntrada.nTrapezios);
 }
 
 // falta criar a funcao de saida, emplementar tudo no main e testar pra ver se ta rodando
