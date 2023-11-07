@@ -166,5 +166,3 @@ int main()
 
     Saida(dadosEntrada.valorReal, resultado, dadosEntrada.nTrapezios);
 }
-
-// falta criar a funcao de saida, emplementar tudo no main e testar pra ver se ta rodando
