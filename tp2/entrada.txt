@@ -1,0 +1,1 @@
+{valorResistencia: [ponto1,ponto2]; valorResistencia: [ponto1,ponto2]; }
