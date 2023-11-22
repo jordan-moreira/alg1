@@ -5,7 +5,7 @@
 
 typedef struct
 {
-    float a,
+    long double a,
         b;
 
 } Intervalo;
@@ -19,7 +19,7 @@ typedef struct
 } Entrada;
 
 // Requisito 1: Funções Numéricas Pré-Definidas
-float chamada(int funcaoSelecionada, float x)
+long double chamada(int funcaoSelecionada, long double x)
 { // a funcao em questao recebe como parametro um inteiro indicando qual funcao abaixo sera executada e o valor de x retornando o resultado da mesma
 
     switch (funcaoSelecionada)
@@ -44,41 +44,44 @@ float chamada(int funcaoSelecionada, float x)
 }
 
 // Requisito 2: Cálculo da Área do Trapézio
-float calcularAreaTrapezio(float baseMaior, float baseMenor, float altura)
+long double calcularAreaTrapezio(long double baseMaior, long double baseMenor, long double altura)
 {
     return (baseMaior + baseMenor) * altura / 2;
 }
 
 // Requisito 3: Divisão do Intervalo [a, b] em m Sub-Intervalos
-void dividirIntervalo(int funcaoSelecionada, float matrizDeCordenadas[][2], Intervalo intervalo, float m)
-{
-    //  usa-se uma matriz para armazenar os valores das cordenadas(ja calculados pela funcao selecionada) onde a quantidade de linhas dessa matriz e igual a quantidade de sub-intervalos
-    float h = (intervalo.b - intervalo.a) / m,
-          intervaloAtual = intervalo.a;
+// void dividirIntervalo(int funcaoSelecionada, long double matrizDeCordenadas[][2], Intervalo intervalo, long double m)
+// {
+//     //  usa-se uma matriz para armazenar os valores das cordenadas(ja calculados pela funcao selecionada) onde a quantidade de linhas dessa matriz e igual a quantidade de sub-intervalos
+//     long double h = (intervalo.b - intervalo.a) / m,
+//           intervaloAtual = intervalo.a;
 
-    for (int i = 0; i < 2; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            matrizDeCordenadas[j][i] = chamada(funcaoSelecionada, intervaloAtual);
-            intervaloAtual += h;
-        }
-        intervaloAtual = intervalo.a + h;
-    }
-}
+//     for (int i = 0; i < 2; i++)
+//     {
+//         for (int j = 0; j < m; j++)
+//         {
+//             matrizDeCordenadas[j][i] = chamada(funcaoSelecionada, intervaloAtual);
+//             intervaloAtual += h;
+//         }
+//         intervaloAtual = intervalo.a + h;
+//     }
+// }
 
 // Requisito 4: Cálculo da Integral pelo Método do Trapézio
-float calcularIntegral(int funcaoSelecionada, float matrizDeCordenadas[][2], int m, Intervalo intervalo)
+long double calcularIntegral(int funcaoSelecionada, int m, Intervalo intervalo)
 { // essa funcao calcula a are de todos os trapezios formados usando os seus pares de coordenadas passados pela matriz e retorna a somatoria dos mesmos
 
-    float h = (intervalo.b - intervalo.a) / m,
-          somatoriaArea = 0;
-
-    dividirIntervalo(funcaoSelecionada, matrizDeCordenadas, intervalo, m);
+    long double h = (intervalo.b - intervalo.a) / m,
+          intervaloAtual = intervalo.a,
+          somatoriaArea=0;
 
     for (int i = 0; i < m; i++)
     {
-        somatoriaArea += calcularAreaTrapezio(matrizDeCordenadas[i][1], matrizDeCordenadas[i][0], h);
+        long double a=chamada(funcaoSelecionada, intervaloAtual),
+        b=chamada(funcaoSelecionada, intervaloAtual+h);
+
+        somatoriaArea += calcularAreaTrapezio(a,b, h);
+        intervaloAtual += h;
     }
 
     return somatoriaArea;
@@ -105,27 +108,27 @@ Entrada capturarDados()
             printf("Opcao invalida!!");
         }
     }
-    printf("Digite o numero de trapezios a usar na aproximacao:(entre 1 e 1000)\n");
+    printf("Digite o numero de trapezios a usar na aproximacao:\n");
     scanf("%d%*c", &entrada.nTrapezios);
     return entrada;
 }
 
 // Requisito 6: Saída de Dados
 // Função para calcular o erro absoluto
-float ErroAbsoluto(float valorReal, float valorAprox)
+long double ErroAbsoluto(long double valorReal, long double valorAprox)
 {
     return fabs(valorReal - valorAprox);
 }
 // Função pra calcular o erro relativo
-float ErroRelativo(float valorReal, float valorAprox)
+long double ErroRelativo(long double valorReal, long double valorAprox)
 {
     return ErroAbsoluto(valorReal, valorAprox) / fabs(valorReal);
 }
 // Função saída
-void Saida(float valorReal, float valorAprox, int nTrapezios)
+void Saida(long double valorReal, long double valorAprox, int nTrapezios)
 {
-    float erroAbsoluto = ErroAbsoluto(valorReal, valorAprox);
-    float erroRelativo = ErroRelativo(valorReal, valorAprox);
+    long double erroAbsoluto = ErroAbsoluto(valorReal, valorAprox);
+    long double erroRelativo = ErroRelativo(valorReal, valorAprox);
 
     // Imprimir os resultados
     printf("Resultado para %d trapézios: %f\n", nTrapezios, valorAprox);
@@ -138,7 +141,6 @@ int main()
 {
     Entrada dadosEntrada = capturarDados();
     Intervalo intervalo;
-    float matrizDeCordenadas[dadosEntrada.nTrapezios][2];
 
     switch (dadosEntrada.opcao)
     {
@@ -162,7 +164,7 @@ int main()
         break;
     }
 
-    float resultado = calcularIntegral(dadosEntrada.opcao, matrizDeCordenadas, dadosEntrada.nTrapezios, intervalo);
+    long double resultado = calcularIntegral(dadosEntrada.opcao, dadosEntrada.nTrapezios, intervalo);
 
     Saida(dadosEntrada.valorReal, resultado, dadosEntrada.nTrapezios);
 }
