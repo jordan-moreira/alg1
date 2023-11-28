@@ -57,7 +57,6 @@ int **receberDados() {
     fclose(arquivo);
 
     int **matrizPrimaria=criarMatriz(3,strings)
-    int numeros[3]
     for(int i=0;i<strings;i++){
         sscanf(vetorString[i],"%d: [%d,%d]",matrizPrimaria[i][0],matrizPrimaria[i][1],matrizPrimaria[i][2]);
     }
@@ -74,7 +73,20 @@ int **receberDados() {
 
 
 int main(){
-    int **matrizPrimaria=receberDados();
+    int **matrizPrimaria=receberDados(),
+    colunas = sizeof(matrizPrimaria[0]) / sizeof(matrizPrimaria[0][0]);
+    for(int i=0;i<colunas;i++){
+        for(int j=0;j<colunas;j++){
+            if(j!=i && matrizPrimaria[0][i]==matrizPrimaria[0][j] && matrizPrimaria[1][i]==matrizPrimaria[1][j]){
+                
+            }
+        }
+    }
+
+
+
+    int **matrizSecundaria=criarMatriz();
+
     
     
 
