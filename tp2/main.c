@@ -2,8 +2,8 @@
 #include <stdlib.h>
 
 
-int** criarMatriz(int linhas, int colunas) {
-    int** matriz = malloc(linhas * sizeof(int*));
+float** criarMatriz(int linhas, int colunas) {
+    float** matriz = malloc(linhas * sizeof(float*));
     
     if (matriz == NULL) {
         perror("Erro ao alocar a matriz");
@@ -11,7 +11,7 @@ int** criarMatriz(int linhas, int colunas) {
     }
 
     for (int i = 0; i < linhas; i++) {
-        matriz[i] = malloc(colunas * sizeof(int));
+        matriz[i] = malloc(colunas * sizeof(float));
 
         if (matriz[i] == NULL) {
             perror("Erro ao alocar a matriz");
@@ -22,11 +22,22 @@ int** criarMatriz(int linhas, int colunas) {
     return matriz;
 }
 
+float resistenciaEquivalente(float R1, float R2){
+    // Evitar a divisão por zero
+    if (R1 == 0 || R2 == 0) {
+        printf("As resistências não podem ser zero.\n");
+        return -1; // Indica erro
+    }
 
+    // Calcular a resistência equivalente
+    float Re = 1.0 / ((1.0 / R1) + (1.0 / R2));
+
+    return Re;
+}
 
 
 //receber a entrada e criar uma matriz com os dados no formato a seguir
-int **receberDados() {
+float **receberDados() {
     FILE *arquivo = fopen("entrada.txt", "r");
 
     if (arquivo == NULL) {
@@ -56,7 +67,7 @@ int **receberDados() {
     }
     fclose(arquivo);
 
-    int **matrizPrimaria=criarMatriz(3,strings)
+    float **matrizPrimaria=criarMatriz(3,strings);
     for(int i=0;i<strings;i++){
         sscanf(vetorString[i],"%d: [%d,%d]",matrizPrimaria[i][0],matrizPrimaria[i][1],matrizPrimaria[i][2]);
     }
@@ -73,19 +84,39 @@ int **receberDados() {
 
 
 int main(){
-    int **matrizPrimaria=receberDados(),
-    colunas = sizeof(matrizPrimaria[0]) / sizeof(matrizPrimaria[0][0]);
-    for(int i=0;i<colunas;i++){
-        for(int j=0;j<colunas;j++){
-            if(j!=i && matrizPrimaria[0][i]==matrizPrimaria[0][j] && matrizPrimaria[1][i]==matrizPrimaria[1][j]){
-                
+    float **matrizEntrada=receberDados();
+    int quantResistores = sizeof(matrizEntrada[0]) / sizeof(matrizEntrada[0][0]),coluna=0,j=0;
+    float **matrizListaResistores=criarMatriz(3,quantResistores);
+    for(int i=0;i<quantResistores;i++){
+        for(;j<quantResistores;j++){
+            if(j!=i && matrizEntrada[0][i]==matrizEntrada[0][j] && matrizEntrada[1][i]==matrizEntrada[1][j]){
+                matrizListaResistores[0][coluna]=matrizEntrada[0][i];
+                matrizListaResistores[1][coluna]=matrizEntrada[1][i];
+                matrizListaResistores[2][coluna]=resistenciaEquivalente(matrizEntrada[2][i],matrizEntrada[2][j]);
+                coluna++;
             }
+        }
+        j=i+1;
+    }
+     for (int i = 0; i < 3; i++) {
+        matrizListaResistores[i] = realloc(matrizListaResistores[i], coluna * sizeof(float));
+
+        if (matrizListaResistores[i] == NULL) {
+            perror("Erro ao redimensionar a matriz");
+            exit(EXIT_FAILURE);
         }
     }
 
+    
+    float **matrizPrincipal=criarMatriz(coluna+2,coluna+2);//adicao de pontos extras pra se caso for necessario
+    for(int i=0;i<coluna;i++){
+        int ponto1=matrizListaResistores[0][i],
+        ponto2=matrizListaResistores[1][i];
+        float resistencia=matrizListaResistores[2][i];
 
-
-    int **matrizSecundaria=criarMatriz();
+        matrizPrincipal[ponto1][ponto2]=resistencia;
+        matrizPrincipal[ponto2][ponto1]=resistencia;
+    }
 
     
     
